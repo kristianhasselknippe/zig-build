@@ -9,7 +9,11 @@
 
 (defun run-zig-build-command (&rest args)
   (interactive (transient-args))
-  (message (format "zig build %s" (string-join args " "))))
+  (compile (format "zig build %s" (string-join args " "))))
+
+(defun run-zig-run-command (&rest args)
+  (interactive (transient-args))
+  (compile (format "zig build run %s" (string-join args " "))))
 
 (define-infix-argument zig-compile:--c-source (options file)
   :description "compile C source code"
@@ -54,4 +58,5 @@
    ("@c" "Enable compiler debug output for C imports" "--verbose-cimport")
    ("@C" "Enable compiler debug output for C compilation" "--verbose-cc")]
   ["Actions"
-   ("b" "Build" run-zig-build-command)])
+   ("b" "Build (install)" run-zig-build-command)
+   ("r" "Run" run-zig-run-command)])
