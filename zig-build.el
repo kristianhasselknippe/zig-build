@@ -18,7 +18,7 @@
 (define-infix-argument zig-compile:--c-source (options file)
   :description "compile C source code"
   :class 'transient-option
-  :shortarg "-m"
+  :shortarg "-argument"
   :argument "--message=")
 
 (defmacro define-zig-compile-option (option message args body)
@@ -35,6 +35,22 @@
 (define-zig-build-infix "--cache-dir" "Override path to zig cache directory" "-B" "--cache-dir")
 (define-zig-build-infix "--override-std-dir" "Override path to Zig standard library" "-o" "--override-std-dir")
 (define-zig-build-infix "--override-lib-dir" "Override path to Zig lib directory" "-O" "--override-lib-dir")
+
+(defun run-zig-fmt (filesArg)
+  (call-process "zig" nil "*Zig fmt*" nil "fmt" filesArg))
+
+(defun run-zig-fmt-file (&rest args)
+  (interactive (transient-args))
+  (run-zig-fmt (buffer-file-name)))
+
+(defun run-zig-fmt-dir (&rest args)
+  (interactive (transient-args))
+  (run-zig-fmt (file-name-directory (buffer-file-name))))
+
+(define-transient-command zig-fmt () "Zig fmt"
+  ["Actions"
+   ("f" "Format file" run-zig-fmt-file)
+   ("d" "Format directory" run-zig-fmt-dir)])
 
 (define-transient-command zig-build () "Zig build"
   ["General options"
